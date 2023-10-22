@@ -1,4 +1,4 @@
-# Parqueaya - REST API
+# ParqueaYA! - REST API
 
 Welcome to the Parqueaya REST API project! This API is designed to provide a seamless experience for managing parking reservations and related data. Below, you'll find information about the technologies used and how to get started with the project.
 

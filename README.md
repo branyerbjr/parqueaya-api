@@ -1,3 +1,0 @@
-# parqueaya-api
-
-API logeo

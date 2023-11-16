@@ -80,9 +80,9 @@ DATABASES = {
         'ENGINE': 'mysql.connector.django',
         'NAME': 'proyecto_placa',
         'USER': 'root',
-        'PASSWORD': '123456',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'PASSWORD': 'l047AMxXWssE8Umy3uM7tKD8E5AhKJbI',
+        'HOST': '34.23.25.139',
+        'PORT': '3066',
     }
 }
 

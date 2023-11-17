@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'apiauto',
     'apiuser',
     'apiadmin',
     'rest_framework',

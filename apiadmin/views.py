@@ -7,9 +7,13 @@ from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate, login, logout
 
+
+
 class AdminListCreateView(generics.ListCreateAPIView):
     queryset = Admin.objects.all()
     serializer_class = AdminSerializer
+
+
 
 class AdminDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Admin.objects.all()
@@ -31,6 +35,8 @@ class AdminLoginView(APIView):
             return Response({'token': token.key})
         else:
             return Response({'error': 'Credenciales inválidas'}, status=401)
+
+
 
 class AdminLogoutView(APIView):
     permission_classes = [permissions.IsAuthenticated]

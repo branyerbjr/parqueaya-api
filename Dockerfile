@@ -7,8 +7,9 @@ WORKDIR /app
 # Copia el archivo requirements.txt al contenedor
 COPY requirements.txt .
 
-# Instala las dependencias del proyecto
-RUN pip install --no-cache-dir -r requirements.txt
+# Instala las dependencias del proyecto en un entorno virtual
+RUN python -m venv venv
+RUN /bin/bash -c "source venv/bin/activate && pip install --no-cache-dir -r requirements.txt"
 
 # Copia el contenido del directorio actual al contenedor en /app
 COPY . /app
@@ -17,5 +18,5 @@ COPY . /app
 EXPOSE 5000
 
 # Comando para ejecutar la aplicación cuando se inicia el contenedor
-CMD ["python", "manage.py", "migrate"]
-CMD ["python", "manage.py", "runserver", "0.0.0.0:5000"]
+CMD ["/bin/bash", "-c", "source venv/bin/activate && python manage.py migrate && python manage.py runserver 0.0.0.0:5000"]
+

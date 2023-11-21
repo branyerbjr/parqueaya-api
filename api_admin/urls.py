@@ -22,4 +22,3 @@ urlpatterns = [
     path('api/admin/', include('apiadmin.urls')),
     path('api/user/', include('apiuser.urls')),
 ]
-

@@ -36,6 +36,7 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
+    'servicios',
     'apiauto',
     'apiuser',
     'apiadmin',
@@ -89,7 +90,7 @@ DATABASES = {
         'USER': 'root',
         'PASSWORD': 'l047AMxXWssE8Umy3uM7tKD8E5AhKJbI',
         'HOST': '34.23.25.139',
-        'PORT': '3066',
+        'PORT': '3066', 
     }
 }
 

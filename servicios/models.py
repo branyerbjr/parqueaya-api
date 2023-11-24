@@ -1,6 +1,7 @@
 from django.db import models
 from apiuser.models import Usuario
 
+
 # Create your models here.
 
 class MetodoPago(models.Model):
@@ -28,6 +29,7 @@ class RegistroPagos(models.Model):
 
     def __str__(self):
         return f"Registro de Pagos - {self.fecha_pago}"
+
 
 class Tarifa(models.Model):
     tipo_tarifa = models.CharField(max_length=255)

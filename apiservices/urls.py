@@ -1,6 +1,6 @@
 # apiservices/urls.py
 from django.urls import path
-from .views import TelegramSettingsView, WhatsAppSettingsView, send_whatsapp_message
+from apiservices.views import TelegramSettingsView, WhatsAppSettingsView, send_whatsapp_message
 
 urlpatterns = [
     path('telegram-settings/', TelegramSettingsView.as_view(), name='telegram-settings'),

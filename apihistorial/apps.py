@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class ApitarifaConfig(AppConfig):
+class ApihistorialConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'apitarifa'
+    name = 'apihistorial'

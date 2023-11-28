@@ -23,6 +23,6 @@ urlpatterns = [
     path('api/user/', include('apiuser.urls')),
     path('api/servicios/', include('servicios.urls')),
     path('api/auto/', include('apiauto.urls')),
-    path('api/service', include('apiservices.urls')),
+    path('api/service/', include('apiservices.urls')),
 
 ]

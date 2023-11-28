@@ -16,6 +16,7 @@ class UsuarioListCreateView(generics.ListCreateAPIView):
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
 
+
 class UsuarioDetailView(RetrieveAPIView):
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
@@ -26,8 +27,8 @@ class UsuarioDetailView(RetrieveAPIView):
         serializer = self.get_serializer(instance)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-class LoginView(APIView):
 
+class LoginView(APIView):
     renderer_classes = [JSONRenderer]
 
     def post(self, request):
@@ -41,8 +42,8 @@ class LoginView(APIView):
         else:
             return Response({'message': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
-class LogoutView(APIView):
 
+class LogoutView(APIView):
     renderer_classes = [JSONRenderer]
 
     def post(self, request):

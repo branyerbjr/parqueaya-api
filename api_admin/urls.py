@@ -22,5 +22,11 @@ urlpatterns = [
     path('api/admin/', include('apiadmin.urls')),
     path('api/user/', include('apiuser.urls')),
     path('api/servicios/', include('servicios.urls')),
+<<<<<<< HEAD
     path('api/auto/', include('apiauto.urls'))
+=======
+    path('api/auto', include('apiauto.urls')),
+    path('api/service', include('apiservices.urls')),
+
+>>>>>>> 29ada3cab48522450f2709ad626c81b25d780f04
 ]

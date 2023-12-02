@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate, login, logout
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.generics import RetrieveAPIView
+from rest_framework.generics import RetrieveAPIView, UpdateAPIView, DestroyAPIView
 
 
 # Create your views here.
@@ -16,8 +16,14 @@ class UsuarioListCreateView(generics.ListCreateAPIView):
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
 
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
 
-class UsuarioDetailView(RetrieveAPIView):
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
+
+class UsuarioDetailView(RetrieveAPIView, UpdateAPIView, DestroyAPIView):
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
     renderer_classes = [JSONRenderer]

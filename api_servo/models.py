@@ -6,3 +6,4 @@ class Servo(models.Model):
     estado = models.CharField(max_length=200)
     caracteristicas = models.CharField(max_length=200)
     topico = models.CharField(max_length=200)
+    

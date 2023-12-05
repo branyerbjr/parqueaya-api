@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import Usuario
 
 class UsuarioSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(source='contrasena', read_only=True)
     class Meta:
         model = Usuario
         fields = '__all__'

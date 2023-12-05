@@ -30,7 +30,7 @@ class Usuario(AbstractBaseUser):
     apellidos = models.CharField(max_length=255)
     dni = models.CharField(max_length=8)
     correo = models.EmailField(unique=True)
-    contrasena = models.CharField(max_length=255)
+    contrasena = models.CharField(max_length=255, verbose_name='contraseña')
     fecha_registro = models.DateTimeField(auto_now_add=True)
     photo_url = models.URLField()
 

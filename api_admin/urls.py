@@ -26,4 +26,7 @@ urlpatterns = [
     path('api/service/', include('apiservices.urls')),
     path('v1/iot/', include('iot.urls')),
 
+    path('api/auto/', include('apiauto.urls')),
+    path('api/service/', include('apiservices.urls')),
+    path('api/parqueos/', include('apiparqueo.urls')),
 ]

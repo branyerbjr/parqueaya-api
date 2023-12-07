@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class ApiadminserverConfig(AppConfig):
+class ApiparqueoConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'apiadminserver'
+    name = 'apiparqueo'

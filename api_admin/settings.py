@@ -37,6 +37,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 # Application definition
 
 INSTALLED_APPS = [
+    'iot',
     'apiservices',
     'servicios',
     'apiauto',
@@ -140,3 +141,7 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+BROKER_HOST = '34.73.226.103'
+BROKER_PORT = 1883
+BROKER_USERNAME = 'admin'
+BROKER_PASSWORD = '@Katanytt2023'

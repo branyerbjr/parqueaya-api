@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
+
 class UsuarioManager(BaseUserManager):
     def create_user(self, correo, contrasena=None, **extra_fields):
         if not correo:
@@ -21,6 +22,7 @@ class UsuarioManager(BaseUserManager):
             raise ValueError('El superusuario debe tener is_superuser=True')
 
         return self.create_user(correo, contrasena, **extra_fields)
+
 
 class Usuario(AbstractBaseUser):
     id = models.AutoField(primary_key=True)

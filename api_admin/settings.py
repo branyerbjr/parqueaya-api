@@ -143,3 +143,7 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+BROKER_HOST = '34.23.25.139'
+BROKER_PORT = 1883
+BROKER_USERNAME = 'admin'
+BROKER_PASSWORD = '@Parqueaya2023'

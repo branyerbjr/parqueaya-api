@@ -1,19 +1,14 @@
 from rest_framework import generics
-from .models import TelegramSettings, WhatsAppSettings
-from .serializers import TelegramSettingsSerializer, WhatsAppSettingsSerializer
+from django.shortcuts import get_object_or_404
+from .models import WhatsAppSettings, Proveedor, Path
+from .serializers import WhatsAppSettingsSerializer
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import requests
 import json
 
 
-class TelegramSettingsView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = TelegramSettingsSerializer
-
-    def get_object(self):
-        return TelegramSettings.objects.first()
-
-
+# WHATSAPP
 class WhatsAppSettingsView(generics.ListCreateAPIView):
     queryset = WhatsAppSettings.objects.all()
     serializer_class = WhatsAppSettingsSerializer
@@ -21,11 +16,6 @@ class WhatsAppSettingsView(generics.ListCreateAPIView):
     def get_object(self):
         # Puedes personalizar esto según tus necesidades, por ejemplo, filtrar por usuario
         return WhatsAppSettings.objects.filter(user=self.request.user).first()
-
-
-class TelegramSettingsListView(generics.ListCreateAPIView):
-    queryset = TelegramSettings.objects.all()
-    serializer_class = TelegramSettingsSerializer
 
 
 class WhatsAppSettingsListView(generics.ListCreateAPIView):
@@ -108,3 +98,33 @@ def send_whatsapp_file(request, id_instance):
             return JsonResponse({'error': str(e)}, status=500)
     else:
         return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+
+# PROVEEDOR TERCERO FACTILIZA
+def consultar_api(request, path_id, proveedor_id, valor):
+    path = get_object_or_404(Path, pk=path_id)
+    proveedor = get_object_or_404(Proveedor, pk=proveedor_id)
+
+    token = proveedor.token
+    url = f'{proveedor.domain}/{path.path}/{valor}'
+    headers = {'Authorization': f'Bearer {proveedor.token}'}
+    response = requests.get(url, headers=headers)
+
+    # Procesar la respuesta según tus necesidades
+    data = response.json() if response.status_code == 200 else {}
+    print(response.status_code)
+    print(response.text)
+    # print(proveedor.token)
+
+    return JsonResponse(data)
+
+
+def listar_paths(request):
+    paths = Path.objects.values('id', 'path')  # Obtener los paths como un diccionario
+    return JsonResponse(list(paths), safe=False)
+
+
+def obtener_path_por_id(request, path_id):
+    path = get_object_or_404(Path, pk=path_id)
+    data = {'id': path.id, 'path': path.path}
+    return JsonResponse(data)

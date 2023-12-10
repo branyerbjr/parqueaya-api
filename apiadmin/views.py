@@ -48,15 +48,16 @@ class RecuperacionContrasena(APIView):
 
 
 
-
 class AdminListCreateView(generics.ListCreateAPIView):
     queryset = Admin.objects.all()
     serializer_class = AdminSerializer
 
+
 class AdminDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Admin.objects.all()
     serializer_class = AdminSerializer
-    
+
+
 class AdminLoginView(APIView):
     permission_classes = [permissions.AllowAny]
 
@@ -73,7 +74,6 @@ class AdminLoginView(APIView):
             return Response({'error': 'Credenciales inválidas'}, status=401)
 
 
- 
 class AdminLogoutView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 

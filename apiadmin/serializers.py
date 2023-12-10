@@ -5,7 +5,7 @@ from .models import Admin, Usuario
 class AdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = Admin
-        fields = ['id', 'contraseña', 'usuario', 'nombres', 'apellidos']
+        fields = '__all__'
 
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:

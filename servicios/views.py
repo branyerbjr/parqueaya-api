@@ -4,7 +4,7 @@ from rest_framework import generics
 from .models import Usuario, MetodoPago, Transaccion, Devolucion, RegistroPagos, Tarifa
 from .serializers import MetodoPagoSerializer, TransaccionSerializer, DevolucionSerializer, RegistroPagosSerializer, \
     TarifaSerializer
-from apiuser.serializers import UsuarioSerializer
+from apiadmin.serializers import UsuarioSerializer
 
 
 class UsuarioListCreateView(generics.ListCreateAPIView):

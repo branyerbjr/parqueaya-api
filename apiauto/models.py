@@ -1,5 +1,5 @@
 from django.db import models
-from apiuser.models import Usuario
+from apiadmin.models import Usuario
 from servicios.models import Transaccion
 
 

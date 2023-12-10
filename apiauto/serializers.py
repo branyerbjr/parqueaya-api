@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Auto
-from apiuser.models import Usuario
+from apiadmin.models import Usuario
 
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:

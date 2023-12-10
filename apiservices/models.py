@@ -18,7 +18,7 @@ class Path(models.Model):
 
 
 class Proveedor(models.Model):
-    token = models.TextField(unique=True, max_length=1000)
+    token = models.TextField(max_length=500, unique=True)
     nombre = models.CharField(max_length=255)
     domain = models.TextField()
     descripcion = models.TextField()

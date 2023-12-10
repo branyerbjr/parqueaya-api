@@ -12,14 +12,13 @@ class Usuario(AbstractBaseUser):
     apellidos = models.CharField(max_length=255)
     dni = models.CharField(max_length=8)
     correo = models.EmailField(unique=True)
-    contrasena = models.CharField(max_length=255, verbose_name='contraseña')
     fecha_registro = models.DateTimeField(auto_now_add=True)
     photo_url = models.URLField()
 
     def save(self, *args, **kwargs):
         # Antes de guardar el modelo, encripta la contraseña si es nueva o modificada
-        if self._state.adding or 'contrasena' in self.get_dirty_fields():
-            self.contrasena = make_password(self.contrasena)
+        if self._state.adding or 'password' in self.get_dirty_fields():
+            self.contrasena = make_password(self.password)
         super().save(*args, **kwargs)
 
     @property

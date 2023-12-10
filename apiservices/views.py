@@ -112,8 +112,8 @@ def consultar_api(request, path_id, proveedor_id, valor):
 
     # Procesar la respuesta según tus necesidades
     data = response.json() if response.status_code == 200 else {}
-    print(response.status_code)
-    print(response.text)
+    # print(response.status_code)
+    # print(response.text)
     # print(proveedor.token)
 
     return JsonResponse(data)

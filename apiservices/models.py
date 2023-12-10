@@ -18,8 +18,8 @@ class Path(models.Model):
 
 
 class Proveedor(models.Model):
-    token = models.TextField(max_length=500, unique=True)
-    nombre = models.CharField(max_length=255)
+    token = models.TextField()
+    nombre = models.CharField(max_length=255, unique=True)
     domain = models.TextField()
     descripcion = models.TextField()
     paths = models.ManyToManyField(Path)

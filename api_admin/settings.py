@@ -36,6 +36,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 INSTALLED_APPS = [
     'iot',
+    'apiuser',
     'rest_framework.authtoken',
     'apiparqueo',
     'apiservices',

@@ -18,10 +18,11 @@ class Usuario(models.Model):
 
 
     def save(self, *args, **kwargs):
-        # Antes de guardar el modelo, encripta la contraseña si es nueva o modificada
+    # Antes de guardar el modelo, encripta la contraseña si es nueva o modificada
         if self._state.adding or 'password' in self.get_dirty_fields():
-            self.set_password(self.password)
+            self.password = make_password(self.password)  # Corrige aquí
         super().save(*args, **kwargs)
+
 
     @property
     def usuario(self):

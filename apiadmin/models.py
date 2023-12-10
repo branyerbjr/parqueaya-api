@@ -1,7 +1,20 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.contrib.auth.hashers import make_password
 
+class CustomUserManager(BaseUserManager):
+    def create_user(self, correo, password=None, **extra_fields):
+        if not correo:
+            raise ValueError('El campo "correo" es obligatorio.')
+        user = self.model(correo=correo, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, correo, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        return self.create_user(correo, password, **extra_fields)
 
 class Usuario(AbstractBaseUser, PermissionsMixin):
     id = models.AutoField(primary_key=True)
@@ -18,7 +31,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     groups = models.ManyToManyField(
         'auth.Group',
         verbose_name='groups',
-        related_name='my_groups',  
+        related_name='apiadmin_user_groups',  # Cambiado el related_name
         blank=True,
         help_text='The groups this user belongs to.',
     )
@@ -26,15 +39,17 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     user_permissions = models.ManyToManyField(
         'auth.Permission',
         verbose_name='user permissions',
-        related_name='my_user_permissions',  
+        related_name='apiadmin_user_permissions',  # Cambiado el related_name
         blank=True,
         help_text='Specific permissions for this user.',
     )
 
+    objects = CustomUserManager()
+
     def save(self, *args, **kwargs):
         # Antes de guardar el modelo, encripta la contraseña si es nueva o modificada
         if self._state.adding or 'password' in self.get_dirty_fields():
-            self.set_password = make_password(self.password)
+            self.set_password(self.password)
         super().save(*args, **kwargs)
 
     @property
@@ -46,8 +61,8 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return f"{self.usuario} - {self.correo}"
     
-
-    
+    class Meta:
+        db_table = 'apiadmin_usuario'
 
 class Admin(models.Model):
     usuario = models.CharField(max_length=50)

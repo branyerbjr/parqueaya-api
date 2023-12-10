@@ -10,4 +10,4 @@ class AdminSerializer(serializers.ModelSerializer):
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
-        fields = ('id', 'telefono', 'nombres', 'apellidos', 'correo', 'usuario', 'dni', 'correo', 'photo_url')
+        fields = '__all__'

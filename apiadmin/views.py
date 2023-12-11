@@ -62,9 +62,9 @@ class AdminLoginView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request, *args, **kwargs):
-        usuario = request.data.get('usuario')
+        correo = request.data.get('correo')
         contraseña = request.data.get('contraseña')
-        user = authenticate(request, usuario=usuario, contraseña=contraseña)
+        user = authenticate(request, correo=correo, contraseña=contraseña)
 
         if user:
             login(request, user)

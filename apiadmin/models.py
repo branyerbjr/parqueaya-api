@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import BaseUserManager
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password, check_password
 
 class Usuario(models.Model):
     id = models.AutoField(primary_key=True)
@@ -14,8 +14,6 @@ class Usuario(models.Model):
     correo = models.EmailField(unique=True)
     fecha_registro = models.DateTimeField(auto_now_add=True)
     photo_url = models.URLField()
-
-
 
     def save(self, *args, **kwargs):
     # Antes de guardar el modelo, encripta la contraseña si es nueva o modificada
@@ -35,6 +33,9 @@ class Usuario(models.Model):
     
     class Meta:
         db_table = 'apiadmin_usuario'
+
+
+
 
 class Admin(models.Model):
     usuario = models.CharField(max_length=50)

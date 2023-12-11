@@ -32,7 +32,6 @@ class InicioSesion(TokenObtainPairView):
         correo = request.data.get('correo')
         password = request.data.get('password')
 
-        # Cambia 'Usuario' por el nombre real de tu modelo de usuario
         user = authenticate(request, correo=correo, password=password)
 
         if user:

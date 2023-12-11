@@ -29,13 +29,13 @@ class InicioSesion(APIView):
         correo = request.data.get('correo')
         password = request.data.get('password')
 
+        print(f'Correo: {correo}, Contraseña: {password}')
+
         user = authenticate(request, correo=correo, password=password)
 
         if user:
-            
-            # Imprime los valores para verificar
-            print(user.correo, user.password)
 
+            print('Usuario autenticado')
             login(request, user)
             refresh_token, access_token = self.get_tokens_for_user(user)
             return Response({
@@ -44,6 +44,7 @@ class InicioSesion(APIView):
                 'access': str(access_token),
             })
         else:
+            print('Credenciales inválidas')
             return Response({'error': 'Credenciales inválidas'}, status=401)
     pass
 

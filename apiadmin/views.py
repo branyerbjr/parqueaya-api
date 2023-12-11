@@ -22,25 +22,26 @@ class RegistroUsuario(generics.CreateAPIView):
     def perform_create(self, serializer):
         serializer.save(correo=self.request.data.get('correo'))
 
-def post(self, request, *args, **kwargs):
-    correo = request.data.get('correo')
-    password = request.data.get('password')
+class InicioSesion(TokenObtainPairView):
+    permission_classes = [permissions.AllowAny]
 
-    user = authenticate(request, correo=correo, password=password)
+    def post(self, request, *args, **kwargs):
+        correo = request.data.get('correo')
+        password = request.data.get('password')
 
-    if user:
-        # Imprime los valores para verificar
-        print(user.correo, user.password)
+        user = authenticate(request, correo=correo, password=password)
 
-        login(request, user)
-        refresh_token, access_token = self.get_tokens_for_user(user)
-        return Response({
-            'message': 'Inicio de sesión exitoso',
-            'refresh': str(refresh_token),
-            'access': str(access_token),
-        })
-    else:
-        return Response({'error': 'Credenciales inválidas'}, status=401)
+        if user:
+            login(request, user)
+            refresh_token, access_token = self.get_tokens_for_user(user)
+            return Response({
+                'message': 'Inicio de sesión exitoso',
+                'refresh': str(refresh_token),
+                'access': str(access_token),
+            })
+        else:
+            return Response({'error': 'Credenciales inválidas'}, status=401)
+    pass
 
 class RecuperacionContrasena(APIView):
     # Implementa la lógica de recuperación de contraseña

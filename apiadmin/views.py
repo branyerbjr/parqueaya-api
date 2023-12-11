@@ -32,6 +32,10 @@ class InicioSesion(TokenObtainPairView):
         user = authenticate(request, correo=correo, password=password)
 
         if user:
+            
+            # Imprime los valores para verificar
+            print(user.correo, user.password)
+
             login(request, user)
             refresh_token, access_token = self.get_tokens_for_user(user)
             return Response({

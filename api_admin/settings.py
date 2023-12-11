@@ -52,7 +52,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+AUTHENTICATION_CLASSES = [
+    'django.contrib.auth.backends.ModelBackend',
+]
 
+AUTH_USER_MODEL = 'apiadmin.Usuario'
 
 # Configuración para rest_framework_simplejwt
 from datetime import timedelta

@@ -29,23 +29,22 @@ class InicioSesion(TokenObtainPairView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        login(request, user)
-        refresh_token, access_token = self.get_tokens_for_user(user)
-        return Response({
-            'message': 'Inicio de sesión exitoso',
-            'refresh': str(refresh_token),
-            'access': str(access_token),
-        })
-    pass
+        correo = request.data.get('correo')
+        password = request.data.get('password')
 
-class RecuperacionContrasena(APIView):
-    # Implementa la lógica de recuperación de contraseña
-    pass
+        # Cambia 'Usuario' por el nombre real de tu modelo de usuario
+        user = authenticate(request, correo=correo, password=password)
 
-
+        if user:
+            login(request, user)
+            refresh_token, access_token = self.get_tokens_for_user(user)
+            return Response({
+                'message': 'Inicio de sesión exitoso',
+                'refresh': str(refresh_token),
+                'access': str(access_token),
+            })
+        else:
+            return Response({'error': 'Credenciales inválidas'}, status=401)
 
 
 class AdminListCreateView(generics.ListCreateAPIView):

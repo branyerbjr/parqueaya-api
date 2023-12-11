@@ -52,6 +52,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+
+
 # Configuración para rest_framework_simplejwt
 from datetime import timedelta
 

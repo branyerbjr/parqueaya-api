@@ -40,9 +40,6 @@ class Usuario(AbstractBaseUser):
     REQUIRED_FIELDS = ['nombres', 'apellidos']
 
     def save(self, *args, **kwargs):
-        # Antes de guardar el modelo, encripta la contraseña si es nueva o modificada
-        if self._state.adding or 'password' in self.get_dirty_fields():
-            self.password = make_password(self.password)
         super().save(*args, **kwargs)
 
     @property

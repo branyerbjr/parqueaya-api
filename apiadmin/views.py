@@ -20,10 +20,7 @@ class RegistroUsuario(generics.CreateAPIView):
     permission_classes = [permissions.AllowAny]
 
     def perform_create(self, serializer):
-        # Antes de crear el usuario, encripta la contraseña
-        password = self.request.data.get('password')
-        encrypted_password = make_password(password)
-        serializer.save(password=encrypted_password, correo=self.request.data.get('correo'))
+        serializer.save(correo=self.request.data.get('correo'))
 
 class InicioSesion(TokenObtainPairView):
     permission_classes = [permissions.AllowAny]

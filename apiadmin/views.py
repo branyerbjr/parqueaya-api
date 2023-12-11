@@ -22,7 +22,7 @@ class RegistroUsuario(generics.CreateAPIView):
     def perform_create(self, serializer):
         serializer.save(correo=self.request.data.get('correo'))
 
-class InicioSesion(TokenObtainPairView):
+class InicioSesion(APIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request, *args, **kwargs):

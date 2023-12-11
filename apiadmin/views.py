@@ -45,6 +45,13 @@ class InicioSesion(TokenObtainPairView):
             })
         else:
             return Response({'error': 'Credenciales inválidas'}, status=401)
+    pass
+
+class RecuperacionContrasena(APIView):
+    # Implementa la lógica de recuperación de contraseña
+    pass
+
+
 
 
 class AdminListCreateView(generics.ListCreateAPIView):

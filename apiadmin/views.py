@@ -47,10 +47,6 @@ class InicioSesion(APIView):
             print('Credenciales inválidas')
             return Response({'error': 'Credenciales inválidas'}, status=401)
         
-    def logout(self, request):
-        # Cerrar sesión del usuario
-        logout(request)
-        return Response({'message': 'Logout exitoso'})
 
 class RecuperacionContrasena(APIView):
     # Implementa la lógica de recuperación de contraseña

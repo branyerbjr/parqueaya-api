@@ -3,6 +3,7 @@ from rest_framework import generics, permissions, status
 from .models import Admin, Usuario
 from .serializers import AdminSerializer, UsuarioSerializer, UsuarioLoginSerializer
 from rest_framework.response import Response
+from django.http import JsonResponse
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate, login, logout
@@ -26,22 +27,21 @@ class InicioSesion(APIView):
     def post(self, request, *args, **kwargs):
         serializer = UsuarioLoginSerializer(data=request.data)
         if serializer.is_valid():
-            user = authenticate(request, correo=serializer.validated_data['correo'], password=serializer.validated_data['password'])
-            if user and check_password(serializer.validated_data['password'], user.password):
+            correo = serializer.validated_data['correo']
+            password = serializer.validated_data['password']
+
+            # Autenticar al usuario
+            user = authenticate(request, correo=correo, password=password)
+
+            if user:
                 print('Usuario autenticado')
                 login(request, user)
-
-                # Generar tokens
-                token, _ = Token.objects.get_or_create(user=user)
-
-                return Response({
-                    'message': 'Inicio de sesión exitoso',
-                    'token': token.key,
-                })
+                return JsonResponse({'message': 'Inicio de sesión exitoso'})
             else:
                 print('Credenciales inválidas')
-                return Response({'error': 'Credenciales inválidas'}, status=status.HTTP_401_UNAUTHORIZED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                return JsonResponse({'error': 'Credenciales inválidas'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class RecuperacionContrasena(APIView):
     # Implementa la lógica de recuperación de contraseña

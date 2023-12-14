@@ -28,18 +28,21 @@ class InicioSesion(APIView):
     def post(self, request, *args, **kwargs):
         serializer = UsuarioLoginSerializer(data=request.data)
         if serializer.is_valid():
-            user = authenticate(request, correo=serializer.validated_data['correo'], password=serializer.validated_data['password'])
-            if user and check_password(serializer.validated_data['password'], user.password):
+            user = authenticate(request, correo=serializer.validated_data['correo'], contrasena=serializer.validated_data['contrasena'])
+            if user and check_password(serializer.validated_data['contrasena'], user.password):
+                print('Usuario autenticado')
                 login(request, user)
-                refresh_token, access_token = self.get_tokens_for_user(user)
+                refresh = RefreshToken.for_user(user)
+                access_token = str(refresh.access_token)
                 return Response({
                     'message': 'Inicio de sesión exitoso',
-                    'refresh': str(refresh_token),
-                    'access': str(access_token),
+                    'refresh': str(refresh),
+                    'access': access_token,
                 })
             else:
-                return Response({'error': 'Credenciales inválidas'}, status=status.HTTP_401_UNAUTHORIZED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                print('Credenciales inválidas')
+                return Response({'error': 'Credenciales inválidas'}, status=401)
+        return Response(serializer.errors, status=400)
 
 
 class RecuperacionContrasena(APIView):

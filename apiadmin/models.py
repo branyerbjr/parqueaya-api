@@ -41,7 +41,7 @@ class Usuario(AbstractBaseUser):
 
     def save(self, *args, **kwargs):
         # Agrega la lógica de cifrado de la contraseña
-        if self._state.adding or 'password' in self.__dict__():
+        if self._state.adding or 'password' in self.__dict__ or 'password' in self._modified_fields: 
             self.password = make_password(self.password)
         super().save(*args, **kwargs)
         

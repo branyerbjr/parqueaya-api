@@ -22,31 +22,32 @@ class RegistroUsuario(generics.CreateAPIView):
     def perform_create(self, serializer):
         serializer.save(correo=self.request.data.get('correo'))
 
+from django.contrib.auth.hashers import check_password
+
 class InicioSesion(APIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request, *args, **kwargs):
-        serializer = UsuarioLoginSerializer(data=request.data)
-        if serializer.is_valid():
-            user = authenticate(request, correo=serializer.validated_data['correo'], password=serializer.validated_data['password'])
-            if user and check_password(serializer.validated_data['password'], user.password):
-                print('Usuario autenticado')
-                login(request, user)
+        correo = request.data.get('correo')
+        password = request.data.get('password')
 
-                # Generar tokens
-                refresh = RefreshToken.for_user(user)
-                access_token = str(refresh.access_token)
-                refresh_token = str(refresh)
+        print(f'Correo: {correo}, Contraseña: {password}')
 
-                return Response({
-                    'message': 'Inicio de sesión exitoso',
-                    'refresh': refresh_token,
-                    'access': access_token,
-                })
-            else:
-                print('Credenciales inválidas')
-                return Response({'error': 'Credenciales inválidas'}, status=401)
-        return Response(serializer.errors, status=400)
+        user = authenticate(request, correo=correo, password=password)
+
+        if user and check_password(password, user.password):
+            print('Usuario autenticado')
+            login(request, user)
+            refresh_token, access_token = self.get_tokens_for_user(user)
+            return Response({
+                'message': 'Inicio de sesión exitoso',
+                'refresh': str(refresh_token),
+                'access': str(access_token),
+            })
+        else:
+            print('Credenciales inválidas')
+            return Response({'error': 'Credenciales inválidas'}, status=401)
+
 
 
 

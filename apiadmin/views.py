@@ -27,8 +27,8 @@ class InicioSesion(APIView):
     def post(self, request, *args, **kwargs):
         serializer = UsuarioLoginSerializer(data=request.data)
         if serializer.is_valid():
-            user = authenticate(request, correo=serializer.validated_data['correo'], contrasena=serializer.validated_data['contrasena'])
-            if user and check_password(serializer.validated_data['contrasena'], user.password):
+            user = authenticate(request, correo=serializer.validated_data['correo'], password=serializer.validated_data['password'])
+            if user and check_password(serializer.validated_data['password'], user.password):
                 login(request, user)
                 refresh_token, access_token = self.get_tokens_for_user(user)
                 return Response({

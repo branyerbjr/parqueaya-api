@@ -1,12 +1,10 @@
 from django.shortcuts import render
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, status
 from .models import Admin, Usuario
-from .serializers import AdminSerializer, UsuarioSerializer
+from .serializers import AdminSerializer, UsuarioSerializer, UsuarioLoginSerializer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
@@ -27,30 +25,20 @@ class InicioSesion(APIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request, *args, **kwargs):
-        correo = request.data.get('correo')
-        password = request.data.get('password')
-
-        print(f'Correo: {correo}, Contraseña: {password}')
-
-        user = authenticate(request, correo=correo, password=password)
-
-        if user:
-            print('Usuario autenticado')
-            login(request, user)
-            refresh_token, access_token = self.get_tokens_for_user(user)
-            return Response({
-                'message': 'Inicio de sesión exitoso',
-                'refresh': str(refresh_token),
-                'access': str(access_token),
-            })
-        else:
-            print('Credenciales inválidas')
-            return Response({'error': 'Credenciales inválidas'}, status=401)
-        
-    def get_tokens_for_user(self, user):
-        refresh = RefreshToken.for_user(user)
-        access = access = refresh.access_token.__str__()
-        return refresh, access
+        serializer = UsuarioLoginSerializer(data=request.data)
+        if serializer.is_valid():
+            user = authenticate(request, correo=serializer.validated_data['correo'], contrasena=serializer.validated_data['contrasena'])
+            if user and check_password(serializer.validated_data['contrasena'], user.password):
+                login(request, user)
+                refresh_token, access_token = self.get_tokens_for_user(user)
+                return Response({
+                    'message': 'Inicio de sesión exitoso',
+                    'refresh': str(refresh_token),
+                    'access': str(access_token),
+                })
+            else:
+                return Response({'error': 'Credenciales inválidas'}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class RecuperacionContrasena(APIView):

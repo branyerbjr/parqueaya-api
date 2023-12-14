@@ -32,17 +32,22 @@ class InicioSesion(APIView):
             if user and check_password(serializer.validated_data['password'], user.password):
                 print('Usuario autenticado')
                 login(request, user)
+
+                # Generar tokens
                 refresh = RefreshToken.for_user(user)
                 access_token = str(refresh.access_token)
+                refresh_token = str(refresh)
+
                 return Response({
                     'message': 'Inicio de sesión exitoso',
-                    'refresh': str(refresh),
+                    'refresh': refresh_token,
                     'access': access_token,
                 })
             else:
                 print('Credenciales inválidas')
                 return Response({'error': 'Credenciales inválidas'}, status=401)
         return Response(serializer.errors, status=400)
+
 
 
 class RecuperacionContrasena(APIView):

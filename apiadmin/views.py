@@ -1,14 +1,14 @@
 from django.shortcuts import render
-from rest_framework import generics, permissions, status
+from rest_framework import generics, permissions
 from .models import Admin, Usuario
-from .serializers import AdminSerializer, UsuarioSerializer, UsuarioLoginSerializer
+from .serializers import AdminSerializer, UsuarioSerializer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
-from django.contrib.auth import authenticate, login, logout
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenObtainPairView
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password
-from django.contrib.auth.hashers import check_password
 
 class UsuarioListView(generics.ListAPIView):
     queryset = Usuario.objects.all()
@@ -22,8 +22,6 @@ class RegistroUsuario(generics.CreateAPIView):
     def perform_create(self, serializer):
         serializer.save(correo=self.request.data.get('correo'))
 
-from django.contrib.auth.hashers import check_password
-
 class InicioSesion(APIView):
     permission_classes = [permissions.AllowAny]
 
@@ -35,7 +33,8 @@ class InicioSesion(APIView):
 
         user = authenticate(request, correo=correo, password=password)
 
-        if user and check_password(password, user.password):
+        if user:
+
             print('Usuario autenticado')
             login(request, user)
             refresh_token, access_token = self.get_tokens_for_user(user)
@@ -47,9 +46,7 @@ class InicioSesion(APIView):
         else:
             print('Credenciales inválidas')
             return Response({'error': 'Credenciales inválidas'}, status=401)
-
-
-
+    pass
 
 class RecuperacionContrasena(APIView):
     # Implementa la lógica de recuperación de contraseña

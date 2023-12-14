@@ -12,6 +12,4 @@ class UsuarioSerializer(serializers.ModelSerializer):
         model = Usuario
         fields = '__all__'
 
-class UsuarioLoginSerializer(serializers.Serializer):
-    correo = serializers.EmailField()
-    password = serializers.CharField(style={'input_type': 'password'})
+

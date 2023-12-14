@@ -8,7 +8,6 @@ from rest_framework.authtoken.models import Token
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
 
 class UsuarioListView(generics.ListAPIView):

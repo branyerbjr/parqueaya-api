@@ -30,7 +30,7 @@ ALLOWED_HOSTS = ['*']
     'http://localhost:3000',  # Añade tu URL de desarrollo aquí
     'http://yapi.34.23.25.139.sslip.io',
 ]"""
-CORS_ORIGIN_ALLOW_ALL = True
+
 
 # Application definition
 
@@ -90,11 +90,6 @@ REST_FRAMEWORK = {
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-# settings.py
-CORS_ALLOWED_ORIGINS = [
-    "https://api.parqueaya.xyz",
-    # Agregar otras "origins" permitidas según sea necesario
-]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

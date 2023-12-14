@@ -29,6 +29,7 @@ ALLOWED_HOSTS = ['*']
 """CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',  # Añade tu URL de desarrollo aquí
     'http://yapi.34.23.25.139.sslip.io',
+    'http://api.parqueaya.xyz',
 ]"""
 
 

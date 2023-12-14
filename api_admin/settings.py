@@ -90,6 +90,12 @@ REST_FRAMEWORK = {
 
 CORS_ORIGIN_ALLOW_ALL = True
 
+# settings.py
+CORS_ALLOWED_ORIGINS = [
+    "https://api.parqueaya.xyz",
+    # Agregar otras "origins" permitidas según sea necesario
+]
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

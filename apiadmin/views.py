@@ -49,7 +49,7 @@ class InicioSesion(APIView):
         
     def get_tokens_for_user(self, user):
         refresh = RefreshToken.for_user(user)
-        access = str(refresh.access_token)
+        access = access = refresh.access_token.__str__()
         return refresh, access
 
 

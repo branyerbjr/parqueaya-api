@@ -34,7 +34,7 @@ class InicioSesion(APIView):
 
         user = authenticate(request, correo=correo, password=password)
 
-        if user and check_password(password, user.password):
+        if user:
             print('Usuario autenticado')
             login(request, user)
             refresh_token, access_token = self.get_tokens_for_user(user)
@@ -46,6 +46,11 @@ class InicioSesion(APIView):
         else:
             print('Credenciales inválidas')
             return Response({'error': 'Credenciales inválidas'}, status=401)
+        
+    def get_tokens_for_user(self, user):
+        refresh = RefreshToken.for_user(user)
+        access = refresh.access_token
+        return refresh, access
 
 class RecuperacionContrasena(APIView):
     # Implementa la lógica de recuperación de contraseña

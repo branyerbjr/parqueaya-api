@@ -49,8 +49,9 @@ class InicioSesion(APIView):
         
     def get_tokens_for_user(self, user):
         refresh = RefreshToken.for_user(user)
-        access = refresh.access_token
+        access = str(refresh.access_token)
         return refresh, access
+
 
 class RecuperacionContrasena(APIView):
     # Implementa la lógica de recuperación de contraseña

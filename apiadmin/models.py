@@ -13,7 +13,7 @@ class UsuarioManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, correo, contrasena=None, **extra_fields):
+    def create_superuser(self, correo, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
 
@@ -22,7 +22,7 @@ class UsuarioManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('El superusuario debe tener is_superuser=True')
 
-        return self.create_user(correo, contrasena, **extra_fields)
+        return self.create_user(correo, password, **extra_fields)
 
 class Usuario(AbstractBaseUser):
     id = models.AutoField(primary_key=True)

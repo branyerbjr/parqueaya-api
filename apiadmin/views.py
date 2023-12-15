@@ -13,6 +13,9 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth.hashers import make_password
 
 class UsuarioRegistrationView(APIView):
+    queryset = UsuarioRegistrationSerializer.objects.all()
+    serializer_class = UsuarioRegistrationSerializer
+
     def post(self, request):
         serializer = UsuarioRegistrationSerializer(data=request.data)
         if serializer.is_valid():

@@ -38,7 +38,7 @@ ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = [
     'iot',
     'rest_framework_simplejwt',
-    
+    'rest_framework.authtoken',
     'apiparqueo',
     'apiservices',
     'servicios',

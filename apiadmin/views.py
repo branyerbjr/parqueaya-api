@@ -31,14 +31,14 @@ class InicioSesion(APIView):
         
         if serializer.is_valid():
             correo = serializer.validated_data['correo']
-            contrasena = serializer.validated_data['contrasena']
+            password = serializer.validated_data['password']
 
             try:
                 user = Usuario.objects.get(correo=correo)
             except Usuario.DoesNotExist:
                 return Response({'error': 'Usuario no encontrado'}, status=status.HTTP_401_UNAUTHORIZED)
 
-            if authenticate(request, correo=correo, password=contrasena):
+            if authenticate(request, correo=correo, password=password):
                 login(request, user)
                 token, _ = Token.objects.get_or_create(user=user)
                 return Response({'token': token.key, 'user': UsuarioSerializer(user).data}, status=status.HTTP_200_OK)

@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import check_password
+from django.contrib.auth.hashers import make_password
 
 class UsuarioListView(generics.ListAPIView):
     queryset = Usuario.objects.all()
@@ -18,7 +19,10 @@ class RegistroUsuario(generics.CreateAPIView):
     permission_classes = [permissions.AllowAny]
 
     def perform_create(self, serializer):
-        serializer.save(correo=self.request.data.get('correo'))
+        # Encriptar la contraseña antes de almacenarla en la base de datos
+        password = self.request.data.get('password')
+        hashed_password = make_password(password)
+        serializer.save(correo=self.request.data.get('correo'), password=hashed_password)
 
 class InicioSesion(APIView):
     permission_classes = [permissions.AllowAny]
@@ -31,7 +35,7 @@ class InicioSesion(APIView):
 
         user = authenticate(request, correo=correo, password=password)
 
-        if user:
+        if user and check_password(password, user.password):
             print('Usuario autenticado')
             login(request, user)
 

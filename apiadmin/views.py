@@ -53,7 +53,8 @@ class InicioSesion(APIView):
                 'token': token.key,
             })
         else:
-            print('Credenciales inválidas')
+            print('Contraseña incorrecta')
+            print(f'Contraseña ingresada: {password}, Contraseña almacenada: {user.password}')
             return Response({'error': 'Credenciales inválidas'}, status=status.HTTP_401_UNAUTHORIZED)
 
 class RecuperacionContrasena(APIView):

@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import generics, permissions, status
 from .models import Admin, Usuario
-from .serializers import AdminSerializer, UsuarioSerializer
+from .serializers import AdminSerializer, UsuarioSerializer, UsuarioLoginSerializer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
@@ -26,36 +26,25 @@ class RegistroUsuario(generics.CreateAPIView):
         serializer.save(correo=self.request.data.get('correo'), password=hashed_password)
 
 class InicioSesion(APIView):
-    permission_classes = [permissions.AllowAny]
+    def post(self, request):
+        serializer = UsuarioLoginSerializer(data=request.data)
+        
+        if serializer.is_valid():
+            correo = serializer.validated_data['correo']
+            contrasena = serializer.validated_data['contrasena']
 
-    def post(self, request, *args, **kwargs):
-        correo = request.data.get('correo')
-        password = request.data.get('password')
+            try:
+                user = Usuario.objects.get(correo=correo)
+            except Usuario.DoesNotExist:
+                return Response({'error': 'Usuario no encontrado'}, status=status.HTTP_401_UNAUTHORIZED)
 
-        print(f'Correo: {correo}, Contraseña: {password}')
-
-        try:
-            # Utiliza el modelo Usuario para autenticar
-            user = Usuario.objects.get(correo=correo)
-        except ObjectDoesNotExist:
-            print('Usuario no encontrado')
-            return Response({'error': 'Usuario no encontrado'}, status=status.HTTP_401_UNAUTHORIZED)
-
-        if check_password(password, user.password):
-            print('Usuario autenticado')
-            login(request, user)
-
-            # Utilizar el token proporcionado por Django Rest Framework
-            token, created = Token.objects.get_or_create(user=user)
-
-            return Response({
-                'message': 'Inicio de sesión exitoso',
-                'token': token.key,
-            })
-        else:
-            print('Contraseña incorrecta')
-            print(f'Contraseña ingresada: {password}, Contraseña almacenada: {user.password}')
-            return Response({'error': 'Credenciales inválidas'}, status=status.HTTP_401_UNAUTHORIZED)
+            if authenticate(request, correo=correo, password=contrasena):
+                login(request, user)
+                token, _ = Token.objects.get_or_create(user=user)
+                return Response({'token': token.key, 'user': UsuarioSerializer(user).data}, status=status.HTTP_200_OK)
+            else:
+                return Response({'error': 'Credenciales inválidas'}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class RecuperacionContrasena(APIView):
     # Implementa la lógica de recuperación de contraseña

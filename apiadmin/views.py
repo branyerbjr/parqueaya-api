@@ -37,11 +37,15 @@ class InicioSesion(APIView):
         if user and check_password(password, user.password):
             print('Usuario autenticado')
             login(request, user)
-            refresh_token, access_token = self.get_tokens_for_user(user)
+
+            # Generar tokens utilizando SimpleJWT
+            refresh = RefreshToken.for_user(user)
+            access_token = str(refresh.access_token)
+
             return Response({
                 'message': 'Inicio de sesión exitoso',
-                'refresh': str(refresh_token),
-                'access': str(access_token),
+                'refresh': str(refresh),
+                'access': access_token,
             })
         else:
             print('Credenciales inválidas')

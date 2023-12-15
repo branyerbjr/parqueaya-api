@@ -44,7 +44,7 @@ class InicioSesion(APIView):
 
             return Response({
                 'message': 'Inicio de sesión exitoso',
-                'refresh': str(refresh),  # Esto podría cambiarse a 'str(refresh.access_token)' si es necesario
+                'refresh': str(refresh),
                 'access': access_token,
             })
         else:

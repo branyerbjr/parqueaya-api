@@ -26,6 +26,7 @@ class RegistroUsuario(generics.CreateAPIView):
 
 class InicioSesion(APIView):
     permission_classes = [permissions.AllowAny]
+    serializer_class = UsuarioLoginSerializer
 
     def post(self, request, *args, **kwargs):
         correo = request.data.get('correo')

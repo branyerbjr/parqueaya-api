@@ -9,6 +9,8 @@ from django.contrib.auth import authenticate, login, logout
 from rest_framework.decorators import permission_classes, authentication_classes
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
+from django.shortcuts import get_object_or_404
+
 
 class UsuarioRegistrationView(APIView):
     def post(self, request):
@@ -41,12 +43,21 @@ class UsuListView(generics.ListCreateAPIView):
     @authentication_classes([TokenAuthentication, SessionAuthentication])
     @permission_classes([permissions.IsAuthenticated])
     def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
+        user_id = self.kwargs.get('pk')  # Recupera el ID del usuario de los parámetros de la URL
+        if user_id:
+            # Si se proporciona un ID, recupera un usuario específico
+            user = get_object_or_404(Usuario, id=user_id)
+            serializer = UsuarioSerializer(user)
+            return Response(serializer.data)
+        else:
+            # Si no se proporciona un ID, realiza la lista completa
+            return super().get(request, *args, **kwargs)
 
     @authentication_classes([TokenAuthentication, SessionAuthentication])
     @permission_classes([permissions.IsAuthenticated])
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
+
 
 
 class UsuDetailView(generics.RetrieveUpdateDestroyAPIView):

@@ -40,11 +40,8 @@ class Usuario(AbstractBaseUser):
     REQUIRED_FIELDS = ['nombres', 'apellidos']
 
     def save(self, *args, **kwargs):
-        # Agrega la lógica de cifrado de la contraseña
-        if self._state.adding or 'password' in self.__dict__: 
-            self.password = make_password(self.password)
         super().save(*args, **kwargs)
-        
+
     @property
     def usuario(self):
         primer_nombre = self.nombres.split()[0] if self.nombres else ""

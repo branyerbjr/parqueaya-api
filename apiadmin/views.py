@@ -9,8 +9,6 @@ from django.contrib.auth import authenticate, login, logout
 from rest_framework.decorators import permission_classes, authentication_classes
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-from django.contrib.auth.hashers import check_password
-from django.contrib.auth.hashers import make_password
 
 class UsuarioRegistrationView(APIView):
     def post(self, request):

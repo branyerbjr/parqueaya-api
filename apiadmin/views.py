@@ -26,12 +26,13 @@ class UsuarioRegistrationView(APIView):
 class UsuarioLoginView(APIView):
     def post(self, request):
         serializer = UsuarioLoginSerializer(data=request.data)
+        print(request.data)  # Agrega este print para verificar los datos recibidos
         if serializer.is_valid():
             correo = serializer.validated_data['correo']
-            password = serializer.validated_data['password']
-
-            # Utiliza el campo 'correo' al autenticar
-            user = authenticate(request, correo=correo, password=password)
+            contraseña = serializer.validated_data['password']
+            print(f"Correo: {correo}, Contraseña: {contraseña}")  # Agrega este print para verificar los valores
+            user = authenticate(request, correo=correo, password=contraseña)
+            print(user)  # Agrega este print para verificar el resultado de authenticate
 
             if user:
                 login(request, user)
@@ -40,6 +41,7 @@ class UsuarioLoginView(APIView):
             else:
                 return Response({'error': 'Credenciales inválidas'}, status=status.HTTP_401_UNAUTHORIZED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class UsuListView(generics.ListCreateAPIView):

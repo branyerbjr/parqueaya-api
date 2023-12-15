@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
+from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, AbstractUser
 from django.contrib.auth.hashers import make_password, check_password
 
 class UsuarioManager(BaseUserManager):
@@ -56,8 +56,6 @@ class Usuario(AbstractBaseUser):
 
     class Meta:
         db_table = 'apiadmin_usuario'
-
-
 
 
 class Admin(models.Model):

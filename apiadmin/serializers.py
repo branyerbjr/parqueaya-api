@@ -14,7 +14,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
 
 
 class UsuarioRegistrationSerializer(serializers.ModelSerializer):
-    contrasena = serializers.CharField(write_only=True)
+    password = serializers.CharField(write_only=True)
 
     class Meta:
         model = Usuario
@@ -27,5 +27,5 @@ class UsuarioRegistrationSerializer(serializers.ModelSerializer):
 
 class UsuarioLoginSerializer(serializers.Serializer):
     correo = serializers.EmailField()
-    contrasena = serializers.CharField(style={'input_type': 'password'})
+    password = serializers.CharField(style={'input_type': 'password'})
 

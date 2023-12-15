@@ -27,7 +27,12 @@ class UsuarioLoginView(APIView):
     def post(self, request):
         serializer = UsuarioLoginSerializer(data=request.data)
         if serializer.is_valid():
-            user = authenticate(request, correo=serializer.validated_data['correo'], password=serializer.validated_data['password'])
+            correo = serializer.validated_data['correo']
+            contraseña = serializer.validated_data['password']
+
+            # Utiliza el campo 'correo' al autenticar
+            user = authenticate(request, correo=correo, password=contraseña)
+
             if user:
                 login(request, user)
                 token, _ = Token.objects.get_or_create(user=user)

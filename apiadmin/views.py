@@ -28,7 +28,7 @@ class UsuarioLoginView(APIView):
             if user:
                 login(request, user)
                 token, _ = Token.objects.get_or_create(user=user)
-                return Response({'token': token.key, 'user': UsuarioSerializer(user).data}, status=status.HTTP_200_OK)
+                return Response({'token': token.key, 'user': serializer.data}, status=status.HTTP_200_OK)
             else:
                 return Response({'error': 'Credenciales inválidas'}, status=status.HTTP_401_UNAUTHORIZED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

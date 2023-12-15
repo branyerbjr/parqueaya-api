@@ -2,20 +2,27 @@ from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, AbstractUser
 from django.contrib.auth.hashers import make_password, check_password
 
+# Usuarios
 class UsuarioManager(BaseUserManager):
-    def create_user(self, correo, password=None, **extra_fields):
+    def create_user(self, correo, contrasena=None, **extra_fields):
         if not correo:
             raise ValueError('El correo electrónico es obligatorio')
-        user = self.model(correo=self.normalize_email(correo), **extra_fields)
-        user.set_password(password)
+        email = self.normalize_email(correo)
+        user = self.model(correo=email, **extra_fields)
+        user.set_password(contrasena)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, correo, password=None, **extra_fields):
+    def create_superuser(self, correo, contrasena=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
 
-        return self.create_user(correo, password, **extra_fields)
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('El superusuario debe tener is_staff=True')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('El superusuario debe tener is_superuser=True')
+
+        return self.create_user(correo, contrasena, **extra_fields)
 
 class Usuario(AbstractBaseUser):
     id = models.AutoField(primary_key=True)

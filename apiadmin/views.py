@@ -8,6 +8,7 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.hashers import make_password
+from django.core.exceptions import ObjectDoesNotExist
 
 class UsuarioListView(generics.ListAPIView):
     queryset = Usuario.objects.all()
@@ -33,10 +34,14 @@ class InicioSesion(APIView):
 
         print(f'Correo: {correo}, Contraseña: {password}')
 
-        # Utiliza el modelo Usuario para autenticar
-        user = Usuario.objects.filter(correo=correo).first()
+        try:
+            # Utiliza el modelo Usuario para autenticar
+            user = Usuario.objects.get(correo=correo)
+        except ObjectDoesNotExist:
+            print('Usuario no encontrado')
+            return Response({'error': 'Usuario no encontrado'}, status=status.HTTP_401_UNAUTHORIZED)
 
-        if user and check_password(password, user.password):
+        if check_password(password, user.password):
             print('Usuario autenticado')
             login(request, user)
 
@@ -50,7 +55,6 @@ class InicioSesion(APIView):
         else:
             print('Credenciales inválidas')
             return Response({'error': 'Credenciales inválidas'}, status=status.HTTP_401_UNAUTHORIZED)
-        
 
 class RecuperacionContrasena(APIView):
     # Implementa la lógica de recuperación de contraseña

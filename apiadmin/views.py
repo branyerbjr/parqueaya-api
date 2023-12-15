@@ -33,7 +33,8 @@ class InicioSesion(APIView):
 
         print(f'Correo: {correo}, Contraseña: {password}')
 
-        user = authenticate(request, correo=correo, password=password)
+        # Utiliza el modelo Usuario para autenticar
+        user = Usuario.objects.filter(correo=correo).first()
 
         if user and check_password(password, user.password):
             print('Usuario autenticado')

@@ -119,10 +119,11 @@ class AdminLoginView(APIView):
 
         if user:
             login(request, user)
-            token, created = Token.objects.get_or_create(user=user)
+            token = Token.objects.create(user=user)  # Utilizar create directamente
             return Response({'token': token.key})
         else:
             return Response({'error': 'Credenciales inválidas'}, status=401)
+
 
 
 class AdminLogoutView(APIView):

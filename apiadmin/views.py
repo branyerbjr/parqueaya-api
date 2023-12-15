@@ -8,7 +8,6 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.hashers import make_password
-from django.core.exceptions import ObjectDoesNotExist
 
 class UsuarioListView(generics.ListAPIView):
     queryset = Usuario.objects.all()
@@ -26,36 +25,30 @@ class RegistroUsuario(generics.CreateAPIView):
         serializer.save(correo=self.request.data.get('correo'), password=hashed_password)
 
 class InicioSesion(APIView):
-    def post(self, request):
-        # Crear una instancia del serializador UsuarioLoginSerializer con los datos de la solicitud
-        serializer = UsuarioLoginSerializer(data=request.data)
-        
-        # Verificar si los datos proporcionados son válidos según el serializador
-        if serializer.is_valid():
-            # Extraer el correo y la contraseña validados del serializador
-            correo = serializer.validated_data['correo']
-            password = serializer.validated_data['password']
+    permission_classes = [permissions.AllowAny]
 
-            try:
-                # Intentar obtener un usuario con el correo proporcionado
-                user = Usuario.objects.get(correo=correo)
-            except Usuario.DoesNotExist:
-                # Manejar el caso en que no se encuentra el usuario
-                return Response({'error': 'Usuario no encontrado'}, status=status.HTTP_401_UNAUTHORIZED)
+    def post(self, request, *args, **kwargs):
+        correo = request.data.get('correo')
+        password = request.data.get('password')
 
-            # Autenticar al usuario utilizando el método `authenticate`
-            if authenticate(request, correo=correo, password=password):
-                # Si las credenciales son válidas, iniciar sesión y obtener o crear un token
-                login(request, user)
-                token, _ = Token.objects.get_or_create(user=user)
-                # Devolver una respuesta con el token y los datos del usuario
-                return Response({'token': token.key, 'user': UsuarioSerializer(user).data}, status=status.HTTP_200_OK)
-            else:
-                # Manejar el caso en que las credenciales no son válidas
-                return Response({'error': 'Credenciales inválidas'}, status=status.HTTP_401_UNAUTHORIZED)
-        
-        # Manejar el caso en que los datos no son válidos según el serializador
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        print(f'Correo: {correo}, Contraseña: {password}')
+
+        user = authenticate(request, correo=correo, password=password)
+
+        if user:
+            print('Usuario autenticado')
+            login(request, user)
+
+            # Utilizar el token proporcionado por Django Rest Framework
+            token, created = Token.objects.get_or_create(user=user)
+
+            return Response({
+                'message': 'Inicio de sesión exitoso',
+                'token': token.key,
+            })
+        else:
+            print('Credenciales inválidas')
+            return Response({'error': 'Credenciales inválidas'}, status=status.HTTP_401_UNAUTHORIZED)
 
 class RecuperacionContrasena(APIView):
     # Implementa la lógica de recuperación de contraseña

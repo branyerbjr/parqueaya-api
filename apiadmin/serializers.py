@@ -21,10 +21,10 @@ class UsuarioRegistrationSerializer(serializers.ModelSerializer):
         fields = ['id', 'provider_id', 'provider_specific_uid', 'nombres', 'apellidos', 'dni', 'correo', 'photo_url', 'password']
 
     def create(self, validated_data):
-        validated_data['password'] = validated_data.pop('contraseña', None)
+        validated_data['password'] = validated_data.pop('password', None)
         user = Usuario.objects.create_user(**validated_data)
         return user
-    
+
 
 
 class UsuarioLoginSerializer(serializers.Serializer):

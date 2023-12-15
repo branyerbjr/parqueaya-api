@@ -1,13 +1,10 @@
 from django.shortcuts import render
-import requests
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, status
 from .models import Admin, Usuario
 from .serializers import AdminSerializer, UsuarioSerializer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import check_password
 
@@ -34,22 +31,20 @@ class InicioSesion(APIView):
 
         user = authenticate(request, correo=correo, password=password)
 
-        if user and check_password(password, user.password):
+        if user:
             print('Usuario autenticado')
             login(request, user)
 
-            # Generar tokens utilizando SimpleJWT
-            refresh = RefreshToken.for_user(user)
-            access_token = str(refresh.access_token)
+            # Utilizar el token proporcionado por Django Rest Framework
+            token, created = Token.objects.get_or_create(user=user)
 
             return Response({
                 'message': 'Inicio de sesión exitoso',
-                'refresh': str(refresh),
-                'access': access_token,
+                'token': token.key,
             })
         else:
             print('Credenciales inválidas')
-            return Response({'error': 'Credenciales inválidas'}, status=401)
+            return Response({'error': 'Credenciales inválidas'}, status=status.HTTP_401_UNAUTHORIZED)
         
 
 class RecuperacionContrasena(APIView):

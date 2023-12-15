@@ -27,23 +27,34 @@ class RegistroUsuario(generics.CreateAPIView):
 
 class InicioSesion(APIView):
     def post(self, request):
+        # Crear una instancia del serializador UsuarioLoginSerializer con los datos de la solicitud
         serializer = UsuarioLoginSerializer(data=request.data)
         
+        # Verificar si los datos proporcionados son válidos según el serializador
         if serializer.is_valid():
+            # Extraer el correo y la contraseña validados del serializador
             correo = serializer.validated_data['correo']
             password = serializer.validated_data['password']
 
             try:
+                # Intentar obtener un usuario con el correo proporcionado
                 user = Usuario.objects.get(correo=correo)
             except Usuario.DoesNotExist:
+                # Manejar el caso en que no se encuentra el usuario
                 return Response({'error': 'Usuario no encontrado'}, status=status.HTTP_401_UNAUTHORIZED)
 
+            # Autenticar al usuario utilizando el método `authenticate`
             if authenticate(request, correo=correo, password=password):
+                # Si las credenciales son válidas, iniciar sesión y obtener o crear un token
                 login(request, user)
                 token, _ = Token.objects.get_or_create(user=user)
+                # Devolver una respuesta con el token y los datos del usuario
                 return Response({'token': token.key, 'user': UsuarioSerializer(user).data}, status=status.HTTP_200_OK)
             else:
+                # Manejar el caso en que las credenciales no son válidas
                 return Response({'error': 'Credenciales inválidas'}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        # Manejar el caso en que los datos no son válidos según el serializador
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class RecuperacionContrasena(APIView):
@@ -67,9 +78,9 @@ class AdminLoginView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request, *args, **kwargs):
-        correo = request.data.get('correo')
+        usuario = request.data.get('usuario')
         contraseña = request.data.get('contraseña')
-        user = authenticate(request, correo=correo, contraseña=contraseña)
+        user = authenticate(request, usuario=usuario, contraseña=contraseña)
 
         if user:
             login(request, user)

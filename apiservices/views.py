@@ -6,6 +6,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import requests
 import json
+from django.shortcuts import get_object_or_404
 
 
 # WHATSAPP
@@ -128,3 +129,11 @@ def obtener_path_por_id(request, path_id):
     path = get_object_or_404(Path, pk=path_id)
     data = {'id': path.id, 'path': path.path}
     return JsonResponse(data)
+
+class WhatsAppSettingsDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = WhatsAppSettings.objects.all()
+    serializer_class = WhatsAppSettingsSerializer
+
+    def get_object(self):
+        instance_id = self.kwargs['pk']  # 'pk' es el nombre convencional para el parámetro de la URL
+        return get_object_or_404(WhatsAppSettings, id_instance=instance_id)

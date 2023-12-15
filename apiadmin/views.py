@@ -26,15 +26,14 @@ class UsuarioRegistrationView(APIView):
 class UsuarioLoginView(APIView):
     def post(self, request):
         serializer = UsuarioLoginSerializer(data=request.data)
-        print(request.data)  # Agrega este print para verificar los datos recibidos
+        print(request.data)  
         if serializer.is_valid():
             correo = serializer.validated_data['correo']
             contraseña = serializer.validated_data['password']
-            print(f"Correo: {correo}, Contraseña: {contraseña}")  # Agrega este print para verificar los valores
             user = authenticate(request, correo=correo, password=contraseña)
-            print(user)  # Agrega este print para verificar el resultado de authenticate
 
-            if user:
+            if user and check_password(contraseña, user.password):
+                # El usuario se autenticó correctamente
                 login(request, user)
                 token, _ = Token.objects.get_or_create(user=user)
                 return Response({'token': token.key, 'user': UsuarioSerializer(user).data}, status=status.HTTP_200_OK)

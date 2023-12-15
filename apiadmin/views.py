@@ -1,55 +1,88 @@
 from django.shortcuts import render
 from rest_framework import generics, permissions, status
 from .models import Admin, Usuario
-from .serializers import AdminSerializer, UsuarioSerializer, UsuarioLoginSerializer
+from .serializers import AdminSerializer, UsuarioSerializer, UsuarioLoginSerializer, UsuarioRegistrationSerializer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate, login, logout
+from rest_framework.decorators import permission_classes, authentication_classes
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.hashers import make_password
 
-class UsuarioListView(generics.ListAPIView):
+class UsuarioRegistrationView(APIView):
+    def post(self, request):
+        serializer = UsuarioRegistrationSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            token, _ = Token.objects.get_or_create(user=user)
+            return Response({'token': token.key, 'user': UsuarioSerializer(user).data}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UsuarioLoginView(APIView):
+    def post(self, request):
+        serializer = UsuarioLoginSerializer(data=request.data)
+        if serializer.is_valid():
+            user = authenticate(request, correo=serializer.validated_data['correo'], password=serializer.validated_data['password'])
+            if user:
+                login(request, user)
+                token, _ = Token.objects.get_or_create(user=user)
+                return Response({'token': token.key, 'user': UsuarioSerializer(user).data}, status=status.HTTP_200_OK)
+            else:
+                return Response({'error': 'Credenciales inválidas'}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UsuListView(generics.ListCreateAPIView):
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
-class RegistroUsuario(generics.CreateAPIView):
-    serializer_class = UsuarioSerializer
-    permission_classes = [permissions.AllowAny]
+    @authentication_classes([TokenAuthentication, SessionAuthentication])
+    @permission_classes([permissions.IsAuthenticated])
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
 
-    def perform_create(self, serializer):
-        # Encriptar la contraseña antes de almacenarla en la base de datos
-        password = self.request.data.get('password')
-        hashed_password = make_password(password)
-        serializer.save(correo=self.request.data.get('correo'), password=hashed_password)
-
-class InicioSesion(APIView):
-    permission_classes = [permissions.AllowAny]
-    serializer_class = UsuarioLoginSerializer
-
+    @authentication_classes([TokenAuthentication, SessionAuthentication])
+    @permission_classes([permissions.IsAuthenticated])
     def post(self, request, *args, **kwargs):
-        correo = request.data.get('correo')
-        password = request.data.get('password')
+        return super().post(request, *args, **kwargs)
 
-        print(f'Correo: {correo}, Contraseña: {password}')
 
-        user = authenticate(request, correo=correo, password=password)
+class UsuDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Usuario.objects.all()
+    serializer_class = UsuarioSerializer
 
-        if user:
-            print('Usuario autenticado')
-            login(request, user)
+    @authentication_classes([TokenAuthentication, SessionAuthentication])
+    @permission_classes([permissions.IsAuthenticated])
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
 
-            # Utilizar el token proporcionado por Django Rest Framework
-            token, created = Token.objects.get_or_create(user=user)
+    @authentication_classes([TokenAuthentication, SessionAuthentication])
+    @permission_classes([permissions.IsAuthenticated])
+    def put(self, request, *args, **kwargs):
+        return super().put(request, *args, **kwargs)
 
-            return Response({
-                'message': 'Inicio de sesión exitoso',
-                'token': token.key,
-            })
-        else:
-            print('Credenciales inválidas')
-            return Response({'error': 'Credenciales inválidas'}, status=status.HTTP_401_UNAUTHORIZED)
+    @authentication_classes([TokenAuthentication, SessionAuthentication])
+    @permission_classes([permissions.IsAuthenticated])
+    def delete(self, request, *args, **kwargs):
+        return super().delete(request, *args, **kwargs)
+
+
+class UsuarioLogoutView(APIView):
+    authentication_classes = [TokenAuthentication, SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        # Aquí puedes realizar cualquier lógica de logout necesaria
+        # Por ejemplo, invalidar tokens, eliminar sesiones, etc.
+        request.auth.delete()  # Eliminar el token de autenticación (si estás utilizando tokens)
+
+        # Otros pasos de logout según tu implementación
+
+        return Response({'detail': 'Logout exitoso'}, status=status.HTTP_200_OK)
 
 class RecuperacionContrasena(APIView):
     # Implementa la lógica de recuperación de contraseña

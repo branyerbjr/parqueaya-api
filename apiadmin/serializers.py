@@ -10,7 +10,20 @@ class AdminSerializer(serializers.ModelSerializer):
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
-        fields = '__all__'
+        fields = ['id', 'provider_id', 'provider_specific_uid', 'nombres', 'apellidos', 'dni', 'telefono', 'correo', 'fecha_registro', 'photo_url']
+
+
+class UsuarioRegistrationSerializer(serializers.ModelSerializer):
+    contrasena = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = Usuario
+        fields = ['id', 'provider_id', 'provider_specific_uid', 'nombres', 'apellidos', 'dni', 'correo', 'photo_url', 'password']
+
+    def create(self, validated_data):
+        user = Usuario.objects.create_user(**validated_data)
+        return user
+
 
 class UsuarioLoginSerializer(serializers.Serializer):
     correo = serializers.EmailField()

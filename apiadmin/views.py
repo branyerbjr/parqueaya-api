@@ -28,10 +28,10 @@ class UsuarioLoginView(APIView):
         serializer = UsuarioLoginSerializer(data=request.data)
         if serializer.is_valid():
             correo = serializer.validated_data['correo']
-            contraseña = serializer.validated_data['password']
+            password = serializer.validated_data['password']
 
             # Utiliza el campo 'correo' al autenticar
-            user = authenticate(request, correo=correo, password=contraseña)
+            user = authenticate(request, correo=correo, password=password)
 
             if user:
                 login(request, user)

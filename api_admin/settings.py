@@ -54,9 +54,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
-AUTHENTICATION_CLASSES = [
+AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
+
 
 AUTH_USER_MODEL = 'apiadmin.Usuario'
 

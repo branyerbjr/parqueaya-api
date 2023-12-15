@@ -22,7 +22,7 @@ class UsuarioRegistrationSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         # Cambia la clave 'contraseña' a 'password' en el diccionario
-        validated_data['password'] = validated_data.pop('password')
+        validated_data['password'] = validated_data.pop('contraseña', None)
         user = Usuario.objects.create_user(**validated_data)
         return user
     

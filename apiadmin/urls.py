@@ -9,6 +9,5 @@ urlpatterns = [
     path('recuperar-contrasena/', views.RecuperacionContrasena.as_view(), name='recuperar-contrasena'),
     path('admins/', views.AdminListCreateView.as_view(), name='admin-list-create'),
     path('admins/<int:pk>/', views.AdminDetailView.as_view(), name='admin-detail'),
-    path('admin-login/', views.AdminLoginView.as_view(), name='admin-login'),
     path('admin-logout/', views.AdminLogoutView.as_view(), name='admin-logout'),
 ]

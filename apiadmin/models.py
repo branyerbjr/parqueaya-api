@@ -1,19 +1,19 @@
 from django.db import models
-from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, AbstractUser
-from django.contrib.auth.hashers import make_password, check_password
+from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
-# Usuarios
+
 class UsuarioManager(BaseUserManager):
-    def create_user(self, correo, contraseña=None, **extra_fields):
+    def create_user(self, correo, password=None, **extra_fields):
         if not correo:
             raise ValueError('El correo electrónico es obligatorio')
         email = self.normalize_email(correo)
         user = self.model(correo=email, **extra_fields)
-        user.set_password(contraseña)
+        user.password = password  # Almacena la contraseña en texto plano
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, correo, contraseña=None, **extra_fields):
+
+    def create_superuser(self, correo, contrasena=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
 
@@ -22,7 +22,7 @@ class UsuarioManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('El superusuario debe tener is_superuser=True')
 
-        return self.create_user(correo, contraseña, **extra_fields)
+        return self.create_user(correo, contrasena, **extra_fields)
 
 class Usuario(AbstractBaseUser):
     id = models.AutoField(primary_key=True)
@@ -49,22 +49,13 @@ class Usuario(AbstractBaseUser):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
-    @property
-    def usuario(self):
-        primer_nombre = self.nombres.split()[0] if self.nombres else ""
-        primer_apellido = self.apellidos.split()[0] if self.apellidos else ""
-        return f"{primer_nombre}_{primer_apellido}"
-
-    def __str__(self):
-        return f"{self.usuario} - {self.correo}"
-
     class Meta:
         db_table = 'apiadmin_usuario'
 
 
 class Admin(models.Model):
     usuario = models.CharField(max_length=50)
-    contraseña = models.CharField(max_length=100)
+    contrasena = models.CharField(max_length=100)
     nombres = models.CharField(max_length=100)
     apellidos = models.CharField(max_length=100)
 
